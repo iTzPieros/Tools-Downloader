@@ -2,7 +2,6 @@
 
 $ErrorActionPreference = 'SilentlyContinue'
 
-# Carica le librerie per la GUI e per l'estrazione degli archivi
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -37,254 +36,537 @@ function Add-DefenderExclusion {
 }
 
 $avPrompt = [System.Windows.Forms.MessageBox]::Show(
-    "Vuoi aggiungere l'esclusione a Windows Defender per la cartella di download? (Raccomandato)", 
-    "Signal X - Antivirus Options", 
-    [System.Windows.Forms.MessageBoxButtons]::YesNo, 
+    "Vuoi aggiungere l'esclusione a Windows Defender per la cartella di download? (Raccomandato)",
+    "Signal X - Antivirus Options",
+    [System.Windows.Forms.MessageBoxButtons]::YesNo,
     [System.Windows.Forms.MessageBoxIcon]::Question
 )
-
-if ($avPrompt -eq "Yes") {
-    Add-DefenderExclusion
-}
+if ($avPrompt -eq "Yes") { Add-DefenderExclusion }
 
 # ==============================================================================
 # 2. DIZIONARIO DEI TOOL (Nome -> URL)
 # ==============================================================================
 $script:toolCategories = [ordered]@{
     "Zimmerman Tools" = [ordered]@{
-        "TimelineExplorer" = "https://download.ericzimmermanstools.com/net9/TimelineExplorer.zip"
-        "JumpListExplorer" = "https://download.ericzimmermanstools.com/net9/JumpListExplorer.zip"
-        "ShellBagsExplorer" = "https://download.ericzimmermanstools.com/net9/ShellBagsExplorer.zip"
-        "RegistryExplorer" = "https://download.ericzimmermanstools.com/net9/RegistryExplorer.zip"
-        "PECmd" = "https://download.ericzimmermanstools.com/net9/PECmd.zip"
-        "MFTECmd" = "https://download.ericzimmermanstools.com/net9/MFTECmd.zip"
-        "JLECmd" = "https://download.ericzimmermanstools.com/net9/JLECmd.zip"
-        "SrumECmd" = "https://download.ericzimmermanstools.com/net9/SrumECmd.zip"
-        "bstrings" = "https://download.ericzimmermanstools.com/net9/bstrings.zip"
+        "TimelineExplorer"      = "https://download.ericzimmermanstools.com/net9/TimelineExplorer.zip"
+        "JumpListExplorer"      = "https://download.ericzimmermanstools.com/net9/JumpListExplorer.zip"
+        "ShellBagsExplorer"     = "https://download.ericzimmermanstools.com/net9/ShellBagsExplorer.zip"
+        "RegistryExplorer"      = "https://download.ericzimmermanstools.com/net9/RegistryExplorer.zip"
+        "PECmd"                 = "https://download.ericzimmermanstools.com/net9/PECmd.zip"
+        "MFTECmd"               = "https://download.ericzimmermanstools.com/net9/MFTECmd.zip"
+        "JLECmd"                = "https://download.ericzimmermanstools.com/net9/JLECmd.zip"
+        "SrumECmd"              = "https://download.ericzimmermanstools.com/net9/SrumECmd.zip"
+        "bstrings"              = "https://download.ericzimmermanstools.com/net9/bstrings.zip"
         "RecentFileCacheParser" = "https://download.ericzimmermanstools.com/net9/RecentFileCacheParser.zip"
     }
     "Nirsoft Tools" = [ordered]@{
-        "WinPrefetchView" = "https://www.nirsoft.net/utils/winprefetchview-x64.zip"
-        "LastActivityView" = "https://www.nirsoft.net/utils/lastactivityview.zip"
-        "ExecutedProgramsList" = "https://www.nirsoft.net/utils/executedprogramslist.zip"
-        "UserAssistView" = "https://www.nirsoft.net/utils/userassistview.zip"
-        "AlternateStreamView" = "https://www.nirsoft.net/utils/alternatestreamview-x64.zip"
-        "HashMyFiles" = "https://www.nirsoft.net/utils/hashmyfiles-x64.zip"
-        "JumpListsView" = "https://www.nirsoft.net/utils/jumplistsview.zip"
-        "OpenSaveFilesView" = "https://www.nirsoft.net/utils/opensavefilesview-x64.zip"
-        "USBDeview" = "https://www.nirsoft.net/utils/usbdeview-x64.zip"
-        "TurnedOnTimesView" = "https://www.nirsoft.net/utils/turnedontimesview.zip"
-        "RegScanner" = "https://www.nirsoft.net/utils/regscanner-x64.zip"
-        "BrowserDownloadsView" = "https://www.nirsoft.net/utils/browserdownloadsview-x64.zip"
-        "Clipboardic" = "https://www.nirsoft.net/utils/clipboardic.zip"
-        "DriverView" = "https://www.nirsoft.net/utils/driverview-x64.zip"
-        "FileAccessErrorView" = "https://www.nirsoft.net/utils/fileaccesserrorview-x64.zip"
+        "WinPrefetchView"       = "https://www.nirsoft.net/utils/winprefetchview-x64.zip"
+        "LastActivityView"      = "https://www.nirsoft.net/utils/lastactivityview.zip"
+        "ExecutedProgramsList"  = "https://www.nirsoft.net/utils/executedprogramslist.zip"
+        "UserAssistView"        = "https://www.nirsoft.net/utils/userassistview.zip"
+        "AlternateStreamView"   = "https://www.nirsoft.net/utils/alternatestreamview-x64.zip"
+        "HashMyFiles"           = "https://www.nirsoft.net/utils/hashmyfiles-x64.zip"
+        "JumpListsView"         = "https://www.nirsoft.net/utils/jumplistsview.zip"
+        "OpenSaveFilesView"     = "https://www.nirsoft.net/utils/opensavefilesview-x64.zip"
+        "USBDeview"             = "https://www.nirsoft.net/utils/usbdeview-x64.zip"
+        "TurnedOnTimesView"     = "https://www.nirsoft.net/utils/turnedontimesview.zip"
+        "RegScanner"            = "https://www.nirsoft.net/utils/regscanner-x64.zip"
+        "BrowserDownloadsView"  = "https://www.nirsoft.net/utils/browserdownloadsview-x64.zip"
+        "Clipboardic"           = "https://www.nirsoft.net/utils/clipboardic.zip"
+        "DriverView"            = "https://www.nirsoft.net/utils/driverview-x64.zip"
+        "FileAccessErrorView"   = "https://www.nirsoft.net/utils/fileaccesserrorview-x64.zip"
         "PreviousFilesRecovery" = "https://www.nirsoft.net/utils/previousfilesrecovery-x64.zip"
-        "RecentFilesView" = "https://www.nirsoft.net/utils/recentfilesview.zip"
-        "ShellBagsView" = "https://www.nirsoft.net/utils/shellbagsview.zip"
-        "TaskSchedulerView" = "https://www.nirsoft.net/utils/taskschedulerview-x64.zip"
-        "UninstallView" = "https://www.nirsoft.net/utils/uninstallview-x64.zip"
-        "USBDriveLog" = "https://www.nirsoft.net/utils/usbdrivelog.zip"
+        "RecentFilesView"       = "https://www.nirsoft.net/utils/recentfilesview.zip"
+        "ShellBagsView"         = "https://www.nirsoft.net/utils/shellbagsview.zip"
+        "TaskSchedulerView"     = "https://www.nirsoft.net/utils/taskschedulerview-x64.zip"
+        "UninstallView"         = "https://www.nirsoft.net/utils/uninstallview-x64.zip"
+        "USBDriveLog"           = "https://www.nirsoft.net/utils/usbdrivelog.zip"
     }
     "Spok's Tools" = [ordered]@{
-        "JournalTrace" = "https://github.com/spokwn/JournalTrace/releases/latest/download/JournalTrace.exe"
-        "PathsParser" = "https://github.com/spokwn/PathsParser/releases/latest/download/PathsParser.exe"
-        "BAM-parser" = "https://github.com/spokwn/BAM-parser/releases/latest/download/BAMParser.exe"
-        "PrefetchParser" = "https://github.com/spokwn/prefetch-parser/releases/latest/download/PrefetchParser.exe"
-        "PcaSvcExecuted" = "https://github.com/spokwn/pcasvc-executed/releases/download/v0.8.7/PcaSvcExecuted.exe"
-        "ActivitiesCacheParser" = "https://github.com/spokwn/ActivitiesCache-execution/releases/download/v0.6.5/ActivitiesCacheParser.exe"
-        "Replaceparser" = "https://github.com/spokwn/Replaceparser/releases/latest/download/Replaceparser.exe"
-        "BamDeletedKeys" = "https://github.com/spokwn/BamDeletedKeys/releases/latest/download/BamDeletedKeys.exe"
-        "espouken" = "https://github.com/spokwn/Tool/releases/latest/download/espouken.exe"
+        "JournalTrace"           = "https://github.com/spokwn/JournalTrace/releases/latest/download/JournalTrace.exe"
+        "PathsParser"            = "https://github.com/spokwn/PathsParser/releases/latest/download/PathsParser.exe"
+        "BAM-parser"             = "https://github.com/spokwn/BAM-parser/releases/latest/download/BAMParser.exe"
+        "PrefetchParser"         = "https://github.com/spokwn/prefetch-parser/releases/latest/download/PrefetchParser.exe"
+        "PcaSvcExecuted"         = "https://github.com/spokwn/pcasvc-executed/releases/download/v0.8.7/PcaSvcExecuted.exe"
+        "ActivitiesCacheParser"  = "https://github.com/spokwn/ActivitiesCache-execution/releases/download/v0.6.5/ActivitiesCacheParser.exe"
+        "Replaceparser"          = "https://github.com/spokwn/Replaceparser/releases/latest/download/Replaceparser.exe"
+        "BamDeletedKeys"         = "https://github.com/spokwn/BamDeletedKeys/releases/latest/download/BamDeletedKeys.exe"
+        "espouken"               = "https://github.com/spokwn/Tool/releases/latest/download/espouken.exe"
     }
     "Other Tools" = [ordered]@{
         "SystemInformer (Canary)" = "https://github.com/winsiderss/si-builds/releases/download/3.2.25275.112/systeminformer-build-canary-setup.exe"
-        "Everything Search" = "https://www.voidtools.com/Everything-1.4.1.1029.x64-Setup.exe"
-        "FTK Imager" = "https://d1kpmuwb7gvu1i.cloudfront.net/AccessData_FTK_Imager_4.7.1.exe"
-        "CCleaner" = "https://download.ccleaner.com/rcsetup154.exe"
-        "DIE-engine" = "https://github.com/horsicq/DIE-engine/releases/download/3.10/die_win64_portable_3.10_x64.zip"
-        "HxD Portable" = "https://mh-nexus.de/downloads/HxDPortableSetup.zip"
-        "PEStudio" = "https://www.winitor.com/tools/pestudio/current/pestudio.zip"
-        "Sysinternals Strings" = "https://download.sysinternals.com/files/Strings.zip"
-        "Luyten" = "https://github.com/deathmarine/Luyten/releases/download/v0.5.4_Rebuilt_with_Latest_depenencies/luyten-0.5.4.jar"
-        "Recaf" = "https://github.com/Col-E/Recaf/releases/download/2.21.14/recaf-2.21.14-J8-jar-with-dependencies.jar"
-        "Process Explorer" = "https://download.sysinternals.com/files/ProcessExplorer.zip"
-        "Autoruns" = "https://download.sysinternals.com/files/Autoruns.zip"
-        "Process Monitor" = "https://download.sysinternals.com/files/ProcessMonitor.zip"
-        "TCPView" = "https://download.sysinternals.com/files/TCPView.zip"
-        "Hayabusa" = "https://github.com/Yamato-Security/hayabusa/releases/download/v3.7.0/hayabusa-3.7.0-win-aarch64.zip"
+        "Everything Search"       = "https://www.voidtools.com/Everything-1.4.1.1029.x64-Setup.exe"
+        "FTK Imager"              = "https://d1kpmuwb7gvu1i.cloudfront.net/AccessData_FTK_Imager_4.7.1.exe"
+        "CCleaner"                = "https://download.ccleaner.com/rcsetup154.exe"
+        "DIE-engine"              = "https://github.com/horsicq/DIE-engine/releases/download/3.10/die_win64_portable_3.10_x64.zip"
+        "HxD Portable"            = "https://mh-nexus.de/downloads/HxDPortableSetup.zip"
+        "PEStudio"                = "https://www.winitor.com/tools/pestudio/current/pestudio.zip"
+        "Sysinternals Strings"    = "https://download.sysinternals.com/files/Strings.zip"
+        "Luyten"                  = "https://github.com/deathmarine/Luyten/releases/download/v0.5.4_Rebuilt_with_Latest_depenencies/luyten-0.5.4.jar"
+        "Recaf"                   = "https://github.com/Col-E/Recaf/releases/download/2.21.14/recaf-2.21.14-J8-jar-with-dependencies.jar"
+        "Process Explorer"        = "https://download.sysinternals.com/files/ProcessExplorer.zip"
+        "Autoruns"                = "https://download.sysinternals.com/files/Autoruns.zip"
+        "Process Monitor"         = "https://download.sysinternals.com/files/ProcessMonitor.zip"
+        "TCPView"                 = "https://download.sysinternals.com/files/TCPView.zip"
+        "Hayabusa"                = "https://github.com/Yamato-Security/hayabusa/releases/download/v3.7.0/hayabusa-3.7.0-win-aarch64.zip"
     }
 }
 
+# stato "checked" persistente per ogni tool, indipendente dal filtro di ricerca
+$script:checkState = @{}
+foreach ($cat in $script:toolCategories.Keys) {
+    foreach ($tool in $script:toolCategories[$cat].Keys) {
+        $script:checkState["$cat|$tool"] = $false
+    }
+}
+$script:currentCategory = $script:toolCategories.Keys | Select-Object -First 1
+
 # ==============================================================================
-# 3. FUNZIONE DI DOWNLOAD
+# 3. FUNZIONE DI DOWNLOAD CON PROGRESS REALE
 # ==============================================================================
-function Download-File {
-    param ([string]$url)
+function Invoke-ToolDownload {
+    param ([string]$url, [ScriptBlock]$onProgress)
+
     $fileName = Split-Path $url -Leaf
     $dest = Join-Path $script:folder $fileName
-    
+
+    $wc = New-Object System.Net.WebClient
+    $wc.Headers.Add("User-Agent", "Mozilla/5.0")
+
+    $script:dlDone = $false
+    $script:dlError = $null
+
+    Register-ObjectEvent -InputObject $wc -EventName DownloadProgressChanged -Action {
+        $Event.MessageData.Invoke($EventArgs.ProgressPercentage)
+    } -MessageData $onProgress | Out-Null
+
+    Register-ObjectEvent -InputObject $wc -EventName DownloadFileCompleted -Action {
+        $script:dlDone = $true
+        if ($EventArgs.Error) { $script:dlError = $EventArgs.Error.Message }
+    } | Out-Null
+
     try {
-        $wc = New-Object System.Net.WebClient
-        $wc.Headers.Add("User-Agent", "Mozilla/5.0")
-        $wc.DownloadFile($url, $dest)
-        
-        if ($fileName -match '\.zip$') {
+        $wc.DownloadFileAsync([Uri]$url, $dest)
+        while (-not $script:dlDone) {
+            [System.Windows.Forms.Application]::DoEvents()
+            Start-Sleep -Milliseconds 30
+        }
+    } finally {
+        Get-EventSubscriber | Where-Object { $_.SourceObject -eq $wc } | Unregister-Event
+        $wc.Dispose()
+    }
+
+    if ($script:dlError) { return @{ Success = $false; Error = $script:dlError } }
+
+    if ($fileName -match '\.zip$') {
+        try {
             $outDir = Join-Path $script:folder ([IO.Path]::GetFileNameWithoutExtension($fileName))
-            if (-not (Test-Path $outDir)) {
-                [void](New-Item -Path $outDir -ItemType Directory -Force)
-            }
+            if (-not (Test-Path $outDir)) { [void](New-Item -Path $outDir -ItemType Directory -Force) }
             [System.IO.Compression.ZipFile]::ExtractToDirectory($dest, $outDir)
             Remove-Item $dest -Force
+        } catch {
+            return @{ Success = $false; Error = "Estrazione fallita: $($_.Exception.Message)" }
         }
-        return $true
-    } catch { return $false }
+    }
+    return @{ Success = $true }
 }
 
 # ==============================================================================
-# 4. CREAZIONE DELLA GUI
+# 4. TEMA / COLORI
 # ==============================================================================
+$colorBg        = [System.Drawing.Color]::FromArgb(12, 12, 16)
+$colorPanel     = [System.Drawing.Color]::FromArgb(20, 20, 26)
+$colorPanel2    = [System.Drawing.Color]::FromArgb(26, 26, 34)
+$colorAccent    = [System.Drawing.Color]::FromArgb(168, 62, 255)   # viola acceso
+$colorAccentDk  = [System.Drawing.Color]::FromArgb(90, 30, 140)
+$colorCyan      = [System.Drawing.Color]::FromArgb(0, 191, 255)
+$colorText      = [System.Drawing.Color]::FromArgb(235, 235, 240)
+$colorTextDim   = [System.Drawing.Color]::FromArgb(150, 150, 160)
+$colorGreen     = [System.Drawing.Color]::FromArgb(80, 220, 130)
+$colorRed       = [System.Drawing.Color]::FromArgb(230, 80, 90)
 
-# Colori Principali
-$colorBg = [System.Drawing.Color]::FromArgb(15, 15, 15)
-$colorDarkMagenta = [System.Drawing.Color]::DarkMagenta
-$colorBlue = [System.Drawing.Color]::DeepSkyBlue
-$colorText = [System.Drawing.Color]::White
+$fontTitle  = New-Object System.Drawing.Font("Consolas", 20, [System.Drawing.FontStyle]::Bold)
+$fontSub    = New-Object System.Drawing.Font("Consolas", 10)
+$fontNormal = New-Object System.Drawing.Font("Segoe UI", 10)
+$fontBold   = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
+$fontSmall  = New-Object System.Drawing.Font("Consolas", 9)
 
-# Finestra Principale
+# ==============================================================================
+# 5. FINESTRA PRINCIPALE (fullscreen, stile app)
+# ==============================================================================
 $form = New-Object System.Windows.Forms.Form
-$form.Text = "Signal X Downloader - Made By Pieros"
-$form.Size = New-Object System.Drawing.Size(650, 500)
+$form.Text = "Signal X - DFIR & Tools Suite"
+$form.MinimumSize = New-Object System.Drawing.Size(1100, 650)
 $form.StartPosition = 'CenterScreen'
 $form.BackColor = $colorBg
 $form.ForeColor = $colorText
-$form.FormBorderStyle = 'FixedDialog'
-$form.MaximizeBox = $false
+$form.FormBorderStyle = 'Sizable'
+$form.WindowState = 'Maximized'
+$form.Font = $fontNormal
 
-$fontTitle = New-Object System.Drawing.Font("Consolas", 14, [System.Drawing.FontStyle]::Bold)
-$fontNormal = New-Object System.Drawing.Font("Consolas", 10)
+# ---- Header ----
+$headerPanel = New-Object System.Windows.Forms.Panel
+$headerPanel.Dock = 'Top'
+$headerPanel.Height = 90
+$headerPanel.BackColor = $colorPanel
+$form.Controls.Add($headerPanel)
 
-# Titolo in alto
 $lblTitle = New-Object System.Windows.Forms.Label
-$lblTitle.Text = "SIGNAL X DFIR & SCREENSHARING TOOLS"
+$lblTitle.Text = "SIGNAL X — DFIR & SCREENSHARING TOOLS"
 $lblTitle.Font = $fontTitle
-$lblTitle.ForeColor = $colorDarkMagenta
-$lblTitle.AutoSize = $false
-$lblTitle.TextAlign = 'MiddleCenter'
-$lblTitle.Dock = 'Top'
-$lblTitle.Height = 40
-$form.Controls.Add($lblTitle)
+$lblTitle.ForeColor = $colorAccent
+$lblTitle.AutoSize = $true
+$lblTitle.Location = New-Object System.Drawing.Point(30, 14)
+$headerPanel.Controls.Add($lblTitle)
 
 $lblSub = New-Object System.Windows.Forms.Label
-$lblSub.Text = "Made by Pieros | discord.gg/XVsgKxC4MX"
-$lblSub.Font = $fontNormal
-$lblSub.ForeColor = $colorBlue
-$lblSub.AutoSize = $false
-$lblSub.TextAlign = 'MiddleCenter'
-$lblSub.Dock = 'Top'
-$lblSub.Height = 30
-$form.Controls.Add($lblSub)
+$lblSub.Text = "Made by Pieros  |  discord.gg/XVsgKxC4MX  |  destinazione: $script:folder"
+$lblSub.Font = $fontSub
+$lblSub.ForeColor = $colorCyan
+$lblSub.AutoSize = $true
+$lblSub.Location = New-Object System.Drawing.Point(32, 56)
+$headerPanel.Controls.Add($lblSub)
 
-# Pannello TabControl per le sezioni dei tool
-$tabControl = New-Object System.Windows.Forms.TabControl
-$tabControl.Dock = 'Fill'
-$tabControl.Font = $fontNormal
+$accentBar = New-Object System.Windows.Forms.Panel
+$accentBar.Dock = 'Bottom'
+$accentBar.Height = 3
+$accentBar.BackColor = $colorAccent
+$headerPanel.Controls.Add($accentBar)
 
-$script:checkedBoxesList = @()
+# ---- Sidebar categorie ----
+$sidebar = New-Object System.Windows.Forms.Panel
+$sidebar.Dock = 'Left'
+$sidebar.Width = 240
+$sidebar.BackColor = $colorPanel
+$form.Controls.Add($sidebar)
 
+$lblCatHeader = New-Object System.Windows.Forms.Label
+$lblCatHeader.Text = "CATEGORIE"
+$lblCatHeader.Font = $fontSmall
+$lblCatHeader.ForeColor = $colorTextDim
+$lblCatHeader.Dock = 'Top'
+$lblCatHeader.Height = 30
+$lblCatHeader.TextAlign = 'MiddleLeft'
+$lblCatHeader.Padding = New-Object System.Windows.Forms.Padding(20, 10, 0, 0)
+$sidebar.Controls.Add($lblCatHeader)
+
+$script:categoryButtons = @{}
+$catButtonY = 40
 foreach ($category in $script:toolCategories.Keys) {
-    $tabPage = New-Object System.Windows.Forms.TabPage
-    $tabPage.Text = $category
-    $tabPage.BackColor = $colorBg
-
-    $clb = New-Object System.Windows.Forms.CheckedListBox
-    $clb.Dock = 'Fill'
-    $clb.BackColor = [System.Drawing.Color]::FromArgb(25, 25, 25)
-    $clb.ForeColor = $colorText
-    $clb.BorderStyle = 'None'
-    $clb.CheckOnClick = $true
-    
-    foreach ($tool in $script:toolCategories[$category].Keys) {
-        [void]$clb.Items.Add($tool)
-    }
-
-    $script:checkedBoxesList += @{ "Category" = $category; "Control" = $clb }
-    $tabPage.Controls.Add($clb)
-    $tabControl.TabPages.Add($tabPage)
+    $btn = New-Object System.Windows.Forms.Button
+    $btn.Text = "  $category"
+    $btn.Tag = $category
+    $btn.Font = $fontBold
+    $btn.FlatStyle = 'Flat'
+    $btn.FlatAppearance.BorderSize = 0
+    $btn.TextAlign = 'MiddleLeft'
+    $btn.Size = New-Object System.Drawing.Size(240, 46)
+    $btn.Location = New-Object System.Drawing.Point(0, $catButtonY)
+    $btn.BackColor = $colorPanel
+    $btn.ForeColor = $colorText
+    $btn.Cursor = 'Hand'
+    $btn.Add_Click({ Switch-Category -category $this.Tag })
+    $sidebar.Controls.Add($btn)
+    $script:categoryButtons[$category] = $btn
+    $catButtonY += 46
 }
 
-# Pannello Inferiore
+$lblCount = New-Object System.Windows.Forms.Label
+$lblCount.Name = "lblCount"
+$lblCount.Font = $fontSmall
+$lblCount.ForeColor = $colorAccent
+$lblCount.Location = New-Object System.Drawing.Point(20, $form.MinimumSize.Height - 260)
+$lblCount.AutoSize = $true
+$lblCount.Text = "0 strumenti selezionati"
+$lblCount.Anchor = 'Bottom, Left'
+$sidebar.Controls.Add($lblCount)
+$script:lblCount = $lblCount
+
+# ---- Area centrale ----
+$mainArea = New-Object System.Windows.Forms.Panel
+$mainArea.Dock = 'Fill'
+$mainArea.BackColor = $colorBg
+$mainArea.Padding = New-Object System.Windows.Forms.Padding(20)
+$form.Controls.Add($mainArea)
+$mainArea.BringToFront()
+
+# Barra ricerca + azioni rapide
+$toolbarPanel = New-Object System.Windows.Forms.Panel
+$toolbarPanel.Dock = 'Top'
+$toolbarPanel.Height = 46
+$mainArea.Controls.Add($toolbarPanel)
+
+$txtSearch = New-Object System.Windows.Forms.TextBox
+$txtSearch.Font = $fontNormal
+$txtSearch.BackColor = $colorPanel2
+$txtSearch.ForeColor = $colorText
+$txtSearch.BorderStyle = 'FixedSingle'
+$txtSearch.Size = New-Object System.Drawing.Size(320, 28)
+$txtSearch.Location = New-Object System.Drawing.Point(0, 8)
+$txtSearch.Text = "Cerca strumento..."
+$txtSearch.ForeColor = $colorTextDim
+$txtSearch.Add_Enter({ if ($txtSearch.Text -eq "Cerca strumento...") { $txtSearch.Text = ""; $txtSearch.ForeColor = $colorText } })
+$txtSearch.Add_Leave({ if ($txtSearch.Text -eq "") { $txtSearch.Text = "Cerca strumento..."; $txtSearch.ForeColor = $colorTextDim } })
+$txtSearch.Add_TextChanged({ Refresh-ToolList })
+$toolbarPanel.Controls.Add($txtSearch)
+
+$btnSelectAll = New-Object System.Windows.Forms.Button
+$btnSelectAll.Text = "Seleziona tutti"
+$btnSelectAll.Font = $fontSmall
+$btnSelectAll.FlatStyle = 'Flat'
+$btnSelectAll.FlatAppearance.BorderColor = $colorAccent
+$btnSelectAll.BackColor = $colorPanel2
+$btnSelectAll.ForeColor = $colorText
+$btnSelectAll.Size = New-Object System.Drawing.Size(140, 28)
+$btnSelectAll.Location = New-Object System.Drawing.Point(335, 8)
+$btnSelectAll.Cursor = 'Hand'
+$btnSelectAll.Add_Click({
+    foreach ($tool in $script:toolCategories[$script:currentCategory].Keys) {
+        $script:checkState["$script:currentCategory|$tool"] = $true
+    }
+    Refresh-ToolList
+})
+$toolbarPanel.Controls.Add($btnSelectAll)
+
+$btnDeselectAll = New-Object System.Windows.Forms.Button
+$btnDeselectAll.Text = "Deseleziona tutti"
+$btnDeselectAll.Font = $fontSmall
+$btnDeselectAll.FlatStyle = 'Flat'
+$btnDeselectAll.FlatAppearance.BorderColor = $colorTextDim
+$btnDeselectAll.BackColor = $colorPanel2
+$btnDeselectAll.ForeColor = $colorText
+$btnDeselectAll.Size = New-Object System.Drawing.Size(140, 28)
+$btnDeselectAll.Location = New-Object System.Drawing.Point(485, 8)
+$btnDeselectAll.Cursor = 'Hand'
+$btnDeselectAll.Add_Click({
+    foreach ($tool in $script:toolCategories[$script:currentCategory].Keys) {
+        $script:checkState["$script:currentCategory|$tool"] = $false
+    }
+    Refresh-ToolList
+})
+$toolbarPanel.Controls.Add($btnDeselectAll)
+
+# Lista strumenti
+$clb = New-Object System.Windows.Forms.CheckedListBox
+$clb.Dock = 'Fill'
+$clb.BackColor = $colorPanel2
+$clb.ForeColor = $colorText
+$clb.BorderStyle = 'None'
+$clb.Font = $fontNormal
+$clb.CheckOnClick = $true
+$clb.IntegralHeight = $false
+$mainArea.Controls.Add($clb)
+$clb.BringToFront()
+$script:clb = $clb
+
+$clb.Add_ItemCheck({
+    param($s, $e)
+    $tool = $clb.Items[$e.Index]
+    $isChecked = ($e.NewValue -eq [System.Windows.Forms.CheckState]::Checked)
+    $script:checkState["$script:currentCategory|$tool"] = $isChecked
+    $form.BeginInvoke([Action]{ Update-SelectedCount }) | Out-Null
+})
+
+function Refresh-ToolList {
+    $clb.Items.Clear()
+    $filter = $txtSearch.Text
+    if ($filter -eq "Cerca strumento...") { $filter = "" }
+    foreach ($tool in $script:toolCategories[$script:currentCategory].Keys) {
+        if ($filter -eq "" -or $tool -like "*$filter*") {
+            $idx = $clb.Items.Add($tool)
+            if ($script:checkState["$script:currentCategory|$tool"]) {
+                $clb.SetItemChecked($idx, $true)
+            }
+        }
+    }
+    Update-SelectedCount
+}
+
+function Update-SelectedCount {
+    $total = ($script:checkState.Values | Where-Object { $_ }).Count
+    $script:lblCount.Text = "$total strumenti selezionati"
+}
+
+function Switch-Category {
+    param($category)
+    $script:currentCategory = $category
+    foreach ($c in $script:categoryButtons.Keys) {
+        if ($c -eq $category) {
+            $script:categoryButtons[$c].BackColor = $colorAccentDk
+            $script:categoryButtons[$c].ForeColor = [System.Drawing.Color]::White
+        } else {
+            $script:categoryButtons[$c].BackColor = $colorPanel
+            $script:categoryButtons[$c].ForeColor = $colorText
+        }
+    }
+    Refresh-ToolList
+}
+
+# ---- Pannello inferiore: log + progress + azioni ----
 $bottomPanel = New-Object System.Windows.Forms.Panel
 $bottomPanel.Dock = 'Bottom'
-$bottomPanel.Height = 80
+$bottomPanel.Height = 230
+$bottomPanel.BackColor = $colorPanel
 $form.Controls.Add($bottomPanel)
-$form.Controls.Add($tabControl) # Il TabControl riempirà lo spazio rimanente
 
-# Label di Status
+$logBox = New-Object System.Windows.Forms.TextBox
+$logBox.Multiline = $true
+$logBox.ReadOnly = $true
+$logBox.ScrollBars = 'Vertical'
+$logBox.BackColor = [System.Drawing.Color]::FromArgb(8, 8, 10)
+$logBox.ForeColor = $colorTextDim
+$logBox.Font = $fontSmall
+$logBox.BorderStyle = 'None'
+$logBox.Location = New-Object System.Drawing.Point(20, 15)
+$logBox.Size = New-Object System.Drawing.Size(600, 155)
+$logBox.Anchor = 'Top, Bottom, Left, Right'
+$bottomPanel.Controls.Add($logBox)
+
+function Write-Log {
+    param([string]$text, [string]$type = "info")
+    $prefix = switch ($type) {
+        "ok"    { "[OK]  " }
+        "err"   { "[ERR] " }
+        default { "[..]  " }
+    }
+    $logBox.AppendText("$prefix$text`r`n")
+    $logBox.SelectionStart = $logBox.Text.Length
+    $logBox.ScrollToCaret()
+}
+
+$script:progressBar = New-Object System.Windows.Forms.ProgressBar
+$script:progressBar.Style = 'Continuous'
+$script:progressBar.Minimum = 0
+$script:progressBar.Maximum = 100
+$script:progressBar.Location = New-Object System.Drawing.Point(20, 180)
+$script:progressBar.Size = New-Object System.Drawing.Size(600, 18)
+$script:progressBar.Anchor = 'Bottom, Left, Right'
+$bottomPanel.Controls.Add($script:progressBar)
+
 $script:lblStatus = New-Object System.Windows.Forms.Label
-$script:lblStatus.Text = "Status: In attesa di selezione..."
-$script:lblStatus.Font = $fontNormal
-$script:lblStatus.ForeColor = $colorBlue
+$script:lblStatus.Text = "Pronto."
+$script:lblStatus.Font = $fontSmall
+$script:lblStatus.ForeColor = $colorCyan
 $script:lblStatus.AutoSize = $false
-$script:lblStatus.Dock = 'Top'
-$script:lblStatus.Height = 30
-$script:lblStatus.TextAlign = 'MiddleCenter'
+$script:lblStatus.Location = New-Object System.Drawing.Point(20, 200)
+$script:lblStatus.Size = New-Object System.Drawing.Size(600, 20)
+$script:lblStatus.Anchor = 'Bottom, Left, Right'
 $bottomPanel.Controls.Add($script:lblStatus)
 
-# Bottone di Download
 $btnDownload = New-Object System.Windows.Forms.Button
 $btnDownload.Text = "SCARICA STRUMENTI SELEZIONATI"
-$btnDownload.Font = New-Object System.Drawing.Font("Consolas", 12, [System.Drawing.FontStyle]::Bold)
-$btnDownload.BackColor = $colorDarkMagenta
-$btnDownload.ForeColor = $colorText
+$btnDownload.Font = New-Object System.Drawing.Font("Segoe UI", 12, [System.Drawing.FontStyle]::Bold)
+$btnDownload.BackColor = $colorAccent
+$btnDownload.ForeColor = [System.Drawing.Color]::White
 $btnDownload.FlatStyle = 'Flat'
-$btnDownload.Width = 350
-$btnDownload.Height = 40
-$btnDownload.Left = ($form.Width - $btnDownload.Width) / 2 - 10
-$btnDownload.Top = 35
+$btnDownload.FlatAppearance.BorderSize = 0
+$btnDownload.Size = New-Object System.Drawing.Size(300, 50)
+$btnDownload.Location = New-Object System.Drawing.Point(650, 15)
+$btnDownload.Anchor = 'Top, Right'
+$btnDownload.Cursor = 'Hand'
 $bottomPanel.Controls.Add($btnDownload)
 
+$btnOpenFolder = New-Object System.Windows.Forms.Button
+$btnOpenFolder.Text = "Apri cartella"
+$btnOpenFolder.Font = $fontSmall
+$btnOpenFolder.BackColor = $colorPanel2
+$btnOpenFolder.ForeColor = $colorText
+$btnOpenFolder.FlatStyle = 'Flat'
+$btnOpenFolder.FlatAppearance.BorderColor = $colorTextDim
+$btnOpenFolder.Size = New-Object System.Drawing.Size(140, 32)
+$btnOpenFolder.Location = New-Object System.Drawing.Point(650, 75)
+$btnOpenFolder.Anchor = 'Top, Right'
+$btnOpenFolder.Cursor = 'Hand'
+$btnOpenFolder.Add_Click({ Start-Process explorer.exe $script:folder })
+$bottomPanel.Controls.Add($btnOpenFolder)
+
+$btnExit = New-Object System.Windows.Forms.Button
+$btnExit.Text = "Esci"
+$btnExit.Font = $fontSmall
+$btnExit.BackColor = $colorPanel2
+$btnExit.ForeColor = $colorRed
+$btnExit.FlatStyle = 'Flat'
+$btnExit.FlatAppearance.BorderColor = $colorRed
+$btnExit.Size = New-Object System.Drawing.Size(140, 32)
+$btnExit.Location = New-Object System.Drawing.Point(810, 75)
+$btnExit.Anchor = 'Top, Right'
+$btnExit.Cursor = 'Hand'
+$btnExit.Add_Click({ $form.Close() })
+$bottomPanel.Controls.Add($btnExit)
+
 # ==============================================================================
-# 5. LOGICA DEL BOTTONE DOWNLOAD
+# 6. LOGICA DOWNLOAD
 # ==============================================================================
 $btnDownload.Add_Click({
-    $selectedUrls = @()
-    
-    # Raccogli tutti gli elementi selezionati nelle varie schede
-    foreach ($item in $script:checkedBoxesList) {
-        $catName = $item.Category
-        $box = $item.Control
-        foreach ($checkedItem in $box.CheckedItems) {
-            $url = $script:toolCategories[$catName][$checkedItem]
-            $selectedUrls += @{ "Name" = $checkedItem; "URL" = $url }
+    $selectedTools = @()
+    foreach ($key in $script:checkState.Keys) {
+        if ($script:checkState[$key]) {
+            $parts = $key -split '\|', 2
+            $cat = $parts[0]; $tool = $parts[1]
+            $selectedTools += @{ Name = $tool; Url = $script:toolCategories[$cat][$tool] }
         }
     }
 
-    if ($selectedUrls.Count -eq 0) {
+    if ($selectedTools.Count -eq 0) {
         [System.Windows.Forms.MessageBox]::Show("Seleziona almeno un tool prima di procedere!", "Attenzione", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
         return
     }
 
     $btnDownload.Enabled = $false
-    $total = $selectedUrls.Count
-    $current = 0
+    $txtSearch.Enabled = $false
+    $btnSelectAll.Enabled = $false
+    $btnDeselectAll.Enabled = $false
+    $logBox.Clear()
 
-    foreach ($tool in $selectedUrls) {
+    $total = $selectedTools.Count
+    $current = 0
+    $failures = @()
+
+    foreach ($t in $selectedTools) {
         $current++
-        $script:lblStatus.Text = "Status: Scaricando $($tool.Name) [$current/$total]..."
-        [System.Windows.Forms.Application]::DoEvents() # Aggiorna la UI
-        
-        Download-File -url $tool.URL
+        $script:lblStatus.ForeColor = $colorCyan
+        $script:lblStatus.Text = "[$current/$total] Scaricando $($t.Name)..."
+        $script:progressBar.Value = 0
+        [System.Windows.Forms.Application]::DoEvents()
+
+        $progressCb = {
+            param($pct)
+            $script:progressBar.Value = [Math]::Min([Math]::Max($pct, 0), 100)
+        }
+
+        $result = Invoke-ToolDownload -url $t.Url -onProgress $progressCb
+
+        if ($result.Success) {
+            Write-Log "$($t.Name) completato" "ok"
+        } else {
+            Write-Log "$($t.Name) fallito - $($result.Error)" "err"
+            $failures += $t.Name
+        }
     }
 
-    $script:lblStatus.Text = "Status: Download Completato!"
-    $script:lblStatus.ForeColor = [System.Drawing.Color]::LimeGreen
-    [System.Windows.Forms.Application]::DoEvents()
+    $script:progressBar.Value = 100
+    if ($failures.Count -eq 0) {
+        $script:lblStatus.Text = "Download completato ($total/$total)."
+        $script:lblStatus.ForeColor = $colorGreen
+    } else {
+        $script:lblStatus.Text = "Completato con $($failures.Count) errori su $total."
+        $script:lblStatus.ForeColor = $colorRed
+    }
 
-    [System.Windows.Forms.MessageBox]::Show("Download completato con successo in:`n$script:folder", "Signal X", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
+    $btnDownload.Enabled = $true
+    $txtSearch.Enabled = $true
+    $btnSelectAll.Enabled = $true
+    $btnDeselectAll.Enabled = $true
+
+    $msg = "Download terminato in:`n$script:folder"
+    if ($failures.Count -gt 0) { $msg += "`n`nFalliti: $($failures -join ', ')" }
+    [System.Windows.Forms.MessageBox]::Show($msg, "Signal X", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
     Start-Process explorer.exe $script:folder
-    $form.Close()
 })
 
-# Mostra l'applicazione
+# ==============================================================================
+# 7. AVVIO
+# ==============================================================================
+Switch-Category -category $script:currentCategory
+$form.Add_Shown({ $form.Activate() })
 $form.ShowDialog() | Out-Null

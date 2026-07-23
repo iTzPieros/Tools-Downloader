@@ -1,0 +1,1 @@
+Open CMD with Admin Privileges and Write: `powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass ; Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/itzpieros/Tools-Downloader/refs/heads/main/Tools%20Downloader')"`
